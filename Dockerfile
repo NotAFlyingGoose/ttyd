@@ -2,6 +2,8 @@ FROM ubuntu:20.04
 
 WORKDIR /app
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 # Dependencies
 RUN apt-get update
 RUN apt-get install -y build-essential cmake git libjson-c-dev libwebsockets-dev
