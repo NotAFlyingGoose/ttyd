@@ -1,15 +1,20 @@
 FROM ubuntu:20.04
 
-ARG TARGETARCH
+WORKDIR /app
 
 # Dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends tini && rm -rf /var/lib/apt/lists/*
+RUN sudo apt-get update
+RUN sudo apt-get install -y build-essential cmake git libjson-c-dev libwebsockets-dev
+RUN git clone https://github.com/tsl0922/ttyd.git
+RUN cd ttyd && mkdir build && cd build
+RUN cmake ..
+RUN make && sudo make install
 
 # Application
-COPY ./dist/${TARGETARCH}/ttyd /usr/bin/ttyd
 
-EXPOSE 7681
-WORKDIR /root
+COPY . .
+
+EXPOSE 443
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["ttyd", "-W", "--ssl", "--port", "443", "bash"]
